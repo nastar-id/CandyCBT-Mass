@@ -14,14 +14,12 @@ function spawnshell() {
   }
 }
 
-function req($url, $post = null) {
+function req($url, $post) {
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-  if ($post) {
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-  }
+  curl_setopt($ch, CURLOPT_POST, true);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
   curl_setopt($ch, CURLOPT_TIMEOUT, 5);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   $xx = curl_exec($ch);
