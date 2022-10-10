@@ -1,7 +1,5 @@
 <?php
 
-error_reporting();
-
 function req($url, $post = null) {
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
